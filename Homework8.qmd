@@ -215,7 +215,6 @@ cv_rmse_summary <- rbind(
   select(Model, mean, n, std_err)
 
 # Print the final RMSE summary
-print("--- CV Results (RMSE) ---")
 print(cv_rmse_summary)
 ```
 
@@ -223,20 +222,18 @@ From CV results, Model 3 had the lowest RMSE (≈ 2987.662). So it is selected a
 ```{r}
 lowest_rmse <- MLR_wkf3
 
-# Fit the model to the entire training data set
+# Obtain final model on the test set
+final_model <- lowest_rmse |>
+  last_fit(bike_split)
 
 # Compute the RMSE metric on the test set
-test_set_metrics <- lowest_rmse |>
-  last_fit(bike_split) |>
+test_set_metrics <- final_model |>
   collect_metrics()
 
 print(test_set_metrics)
 ```
 Obtain the final model coefficient table
 ```{r}
-final_model <- lowest_rmse |>
-  fit(bike_data_daily) 
-tidy(final_model)
 
 # coefficient table using extract_fit_parsnip() and tidy()
 coefficient_table <- final_model |>
@@ -244,5 +241,5 @@ coefficient_table <- final_model |>
   tidy()
   
 # Print the coefficient table
-print(coefficient_table)
+print(coefficient_table, n=40)
 ```
